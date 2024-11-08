@@ -1,6 +1,7 @@
 package code.model.entity;
 
 import code.model.more.AccessToken;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,12 +47,15 @@ public class User {
   @Column(name = "updated_at",nullable = false)
   private LocalDateTime updatedAt;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Address> addresses;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Review> reviews;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Order> orders;
 }

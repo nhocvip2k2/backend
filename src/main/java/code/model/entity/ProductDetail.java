@@ -59,6 +59,7 @@ public class ProductDetail {
   @Column(name = "updated_at",nullable = false)
   private LocalDateTime updatedAt;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "product_id",nullable = false, foreignKey = @ForeignKey(name = "FK_PRODUCT_PRODUCT-DETAIL"))
   private Product product;

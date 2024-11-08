@@ -1,5 +1,6 @@
 package code.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -28,6 +29,7 @@ public class Address {
   @Column(name = "phone_address", length = 20, nullable = false)
   private String phoneAddress;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "user_id",nullable = false, foreignKey = @ForeignKey(name = "FK_USER_ADDRESS"))
   private User user;

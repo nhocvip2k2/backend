@@ -1,6 +1,9 @@
 package code.model.dto;
 
+import code.model.entity.ProductDetail;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +14,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ProductDetailDTO {
-  private Long id;
-  private String type;
-  private String color;
-  private long price;
-  private String condition;
-  private long inventory;
-  private boolean status;
+  private ProductDTO productDTO;
+  @JsonIgnoreProperties({"createdAt", "updatedAt"})
+  private List<ProductDetail> productDetails;
 }

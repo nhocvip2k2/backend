@@ -1,5 +1,6 @@
 package code.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,10 +47,12 @@ public class OrderDetail {
   @Column(name = "status",nullable = false)
   private int status;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "order_id",nullable = false, foreignKey = @ForeignKey(name = "FK_ORDER_ORDER-DETAIL"))
   private Order order;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "product_detail_id",nullable = false, foreignKey = @ForeignKey(name = "FK_PRODUCT-DETAIL_ORDER-DETAIL"))
   private ProductDetail productDetail;

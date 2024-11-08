@@ -32,9 +32,7 @@ public class ProductService {
     this.productDetailRepository = productDetailRepository;
   }
 
-  public Page<ProductDTO> getProductDTOs(int page, int size) {
-    Pageable pageable = PageRequest.of(page, size);
-    List<Product> products = productRepository.findAll();
+  private List<ProductDTO> convert(List<Product> products){
     List<ProductDTO> productDTOs = new ArrayList<>();
     for (Product product : products) {
       ProductDTO productDTO = new ProductDTO();
@@ -46,6 +44,12 @@ public class ProductService {
 
       productDTOs.add(productDTO);
     }
+    return productDTOs;
+  }
+  public Page<ProductDTO> getProductDTOs(int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    List<ProductDTO> productDTOs = this.convert(productRepository.findAll());
+
 //    Chuyển List ProductDTO sang phân trang
     int start = (int) pageable.getOffset();
     int end = Math.min((start + pageable.getPageSize()), productDTOs.size());
@@ -60,18 +64,7 @@ public class ProductService {
     Pageable pageable = PageRequest.of(page, size);
     Category category = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new NotFoundException("Không thấy category có id : " + categoryId));
-    List<Product> products = productRepository.findByCategory(category);
-    List<ProductDTO> productDTOs = new ArrayList<>();
-    for (Product product : products) {
-      ProductDTO productDTO = new ProductDTO();
-      BeanUtils.copyProperties(product, productDTO);
-      productDTO.setCategory(product.getCategory());
-//      Tính số lượt đã thuê
-
-//      Tính số sao đánh giá
-
-      productDTOs.add(productDTO);
-    }
+    List<ProductDTO> productDTOs = this.convert(productRepository.findByCategory(category));
 //    Chuyển List ProductDTO sang phân trang
     int start = (int) pageable.getOffset();
     int end = Math.min((start + pageable.getPageSize()), productDTOs.size());
@@ -81,21 +74,21 @@ public class ProductService {
     return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
   }
 
-  //  Lấy các thuôc tính type của product có product_id (Từ đó giá sẽ đi theo màu sắc)
-  public List<String> getTypesByProductId(long productId) {
-    return productDetailRepository.findDistinctTypeByProductId(productId);
-  }
-
-//  Lấy ProductDetail dựa theo productId và type
-public List<ProductDetailDTO> getProductDetaisByProductIdAndType(long productId, String type) {
-  List<ProductDetail> productDetails = productDetailRepository.findByProductIdAndType(productId, type);
-  List<ProductDetailDTO> productDetailDTOs = new ArrayList<>();
-  for(ProductDetail productDetail : productDetails){
+  //  Lấy Product có id là productId (có cả các thuộc tính : color, type ,....)
+  public ProductDetailDTO getProductDTOByProductId(long productId) {
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new NotFoundException("Không thấy Product có id : " + productId));
+    ProductDTO productDTO = new ProductDTO();
+    BeanUtils.copyProperties(product,productDTO);
     ProductDetailDTO productDetailDTO = new ProductDetailDTO();
-    BeanUtils.copyProperties(productDetail, productDetailDTO);
-    productDetailDTOs.add(productDetailDTO);
+    productDetailDTO.setProductDTO(productDTO);
+    productDetailDTO.setProductDetails(productDetailRepository.findByProductId(productId));
+    return productDetailDTO;
   }
-  return productDetailDTOs;
-}
 
+//  Tìm kiếm sản phẩm
+  public List<ProductDTO> findProductDTOsByKeyword(String keyword){
+    List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
+    return this.convert(products);
+  }
 }

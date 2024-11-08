@@ -10,8 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProductDetailRepository extends JpaRepository<ProductDetail,Long> {
   Optional<ProductDetail> findByProductAndTypeAndColor(Product product, String type, String color);
-  @Query("SELECT DISTINCT pd.type FROM ProductDetail pd WHERE pd.product.id = :productId")
-  List<String> findDistinctTypeByProductId(@Param("productId") long productId);
-  @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId AND pd.type = :type")
-  List<ProductDetail> findByProductIdAndType(@Param("productId") long productId, @Param("type") String type);
+
+  @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId")
+  List<ProductDetail> findByProductId(@Param("productId") long productId);
 }
