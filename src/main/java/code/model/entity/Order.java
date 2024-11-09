@@ -32,18 +32,13 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "current_address",nullable = false)
-  private String currentAddress;
-
-  @Column(name = "current_phone",nullable = false)
-  private String currentPhone;
-
   @Column(name = "shipment",nullable = false)
   private String shipment;
 
   @Column(name = "payment",nullable = false)
   private String payment;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "user_id",nullable = false, foreignKey = @ForeignKey(name = "FK_USER_ORDER"))
   private User user;

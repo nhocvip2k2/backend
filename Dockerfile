@@ -5,6 +5,6 @@ RUN mvn clean package -DskipTests
 
 # Giai đoạn runtime
 FROM eclipse-temurin:17-alpine
-COPY --from=build /target/*.jar demo.jar
+COPY --from=build /target/*.jar DATN.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "demo.jar"]
+ENTRYPOINT ["java", "-jar", "DATN.jar"]

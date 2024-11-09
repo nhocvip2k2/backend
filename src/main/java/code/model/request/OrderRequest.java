@@ -9,8 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class CreateOrderRequest {
-  private long user_id;
-  private String shipment;
+public class OrderRequest {
   private String payment;
+  private String shipment;
 }
