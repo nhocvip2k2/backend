@@ -47,6 +47,9 @@ public class OrderDetail {
   @Column(name = "current_condition",nullable = false)
   private String currentCondition;
 
+  @Column(name = "note",nullable = false)
+  private String note;
+  
   @Column(name = "status",nullable = false)
   private int status;
 

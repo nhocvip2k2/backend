@@ -14,6 +14,7 @@ public class CreateOrderDetailRequest {
   private  OrderRequest orderRequest;
   private String currentAddress;
   private String currentPhone;
+  private String note;
   private long currentPrice;
   private long quantity;
   private List<Long> productDetailIds;
