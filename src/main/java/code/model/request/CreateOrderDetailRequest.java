@@ -11,12 +11,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CreateOrderDetailRequest {
-  private  OrderRequest orderRequest;
+  private  List<ProductItem> productItems;
   private String currentAddress;
   private String currentPhone;
-  private String note;
-  private long currentPrice;
-  private long quantity;
-  private List<Long> productDetailIds;
-
+  private String payment;
+  private String shipment;
 }

@@ -4,7 +4,9 @@ import code.exception.NotFoundException;
 import code.model.entity.Order;
 import code.model.entity.OrderDetail;
 import code.model.entity.ProductDetail;
+import code.model.entity.User;
 import code.model.request.CreateOrderDetailRequest;
+import code.model.request.ProductItem;
 import code.repository.OrderDetailRepository;
 import code.repository.OrderRepository;
 import code.repository.ProductDetailRepository;
@@ -51,30 +53,31 @@ public class OrderDetailService {
   //  Tạo mới đơn hàng : Tạo đối tượng order -> xửa lí List<productDetailId>
   public List<OrderDetail> createOrderDetail(long userId,CreateOrderDetailRequest request) {
 //    1 - Tạo Order mới
-    Order order = new Order();
-    BeanUtils.copyProperties(request.getOrderRequest(), order);
-    order.setUser(userRepository.findById(userId)
-        .orElseThrow(() -> new NotFoundException("Không thấy user có id : " + userId))
-    );
-    orderRepository.save(order);
-//    2 - Tạo các OrderDetail
-    List<Long> productDetailIds = request.getProductDetailIds();
+    User user = userRepository.findById(userId)
+        .orElseThrow(()-> new NotFoundException("Không tìm thấy user có id : " + userId));
+      Order order = new Order();
+      order.setUser(user);
+      order.setPayment(request.getPayment());
+      order.setShipment(request.getShipment());
+      orderRepository.save(order);
+//      Xử lý danh sách các ProductDetail x Quantity
     List<OrderDetail> orderDetails = new ArrayList<>();
-    for(Long productDetailId : productDetailIds){
+    for(ProductItem productItem : request.getProductItems()){
+      long productDetailId = productItem.getProductDetailId();
       ProductDetail productDetail = productDetailRepository.findById(productDetailId)
-          .orElseThrow(()->new NotFoundException("Không tìm thấy ProductDetail có id :" + productDetailId));
+          .orElseThrow(()->new NotFoundException("Không thấy ProductDetail có id : " + productDetailId));
       OrderDetail orderDetail = new OrderDetail();
-      orderDetail.setOrder(order);;
-      orderDetail.setProductDetail(productDetail);
-//      orderDetail.setCurrentAddress(request.getCurrentAddress());
-//      orderDetail.setCurrentPhone(request.getCurrentPhone());
-//      orderDetail.setCurrentPrice(request.getCurrentPrice());
-//      orderDetail.setQuantity(request.getQuantity());
-      BeanUtils.copyProperties(request,orderDetail);
+      orderDetail.setQuantity(productItem.getQuantity());
+      orderDetail.setCurrentPrice(productDetail.getPrice());
+      orderDetail.setCurrentPhone(request.getCurrentPhone());
+      orderDetail.setCurrentAddress(request.getCurrentAddress());
       orderDetail.setCurrentCondition(productDetail.getCondition());
+      orderDetail.setNote(productItem.getNote());
       orderDetail.setStatus(1);
-      orderDetailRepository.save(orderDetail);
+      orderDetail.setOrder(order);
+      orderDetail.setProductDetail(productDetail);
       orderDetails.add(orderDetail);
+      orderDetailRepository.save(orderDetail);
     }
     return orderDetails;
   }
