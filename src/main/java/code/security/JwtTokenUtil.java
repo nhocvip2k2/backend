@@ -26,9 +26,10 @@ public class JwtTokenUtil {
   @Value("${EXPIRATION_TIME}")
   private int EXPIRATION_TIME ;
 
-  public String generateToken(String username, String role) {
+  public String generateToken(String username, String role,String name) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("roles", role);
+    claims.put("name",name);
     return createToken(claims, username);
   }
 

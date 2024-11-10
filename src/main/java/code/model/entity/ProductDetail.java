@@ -39,8 +39,13 @@ public class ProductDetail {
   @Column(name = "type",nullable = false)
   private String type;
 
-  @Column(name = "price",nullable = false)
-  private long price;
+//  giá thuê theo lượt
+  @Column(name = "price_per_use",nullable = false)
+  private long pricePerUse;
+
+  //  giá thuê theo ngày
+  @Column(name = "price_per_day",nullable = false)
+  private long pricePerDay;
 
   @Column(name = "product_condition",nullable = false)
   private String condition;

@@ -44,7 +44,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail1.setProduct(product);
       productDetail1.setType("256G");
       productDetail1.setStatus(true);
-      productDetail1.setPrice(500000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail1.setInventory(20);
       productDetail1.setCondition("90% like new");
       productDetail1.setColor("Titan trắng");
@@ -55,7 +56,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail2.setProduct(product);
       productDetail2.setType("1T");
       productDetail2.setStatus(true);
-      productDetail2.setPrice(480000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail2.setInventory(12);
       productDetail2.setCondition("95% like new");
       productDetail2.setColor("Titan tự nhiên");
@@ -66,7 +68,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail3.setProduct(product);
       productDetail3.setType("512G");
       productDetail3.setStatus(true);
-      productDetail3.setPrice(550000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail3.setInventory(15);
       productDetail3.setCondition("98% like new");
       productDetail3.setColor("Đen");
@@ -77,7 +80,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail4.setProduct(product);
       productDetail4.setType("128G");
       productDetail4.setStatus(true);
-      productDetail4.setPrice(400000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail4.setInventory(30);
       productDetail4.setCondition("85% like new");
       productDetail4.setColor("Bạc");
@@ -88,7 +92,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail5.setProduct(product);
       productDetail5.setType("1T");
       productDetail5.setStatus(true);
-      productDetail5.setPrice(600000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail5.setInventory(8);
       productDetail5.setCondition("99% like new");
       productDetail5.setColor("Vàng");
@@ -99,7 +104,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail6.setProduct(product);
       productDetail6.setType("256G");
       productDetail6.setStatus(true);
-      productDetail6.setPrice(530000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail6.setInventory(25);
       productDetail6.setCondition("92% like new");
       productDetail6.setColor("Xanh lá");
@@ -110,7 +116,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail7.setProduct(product);
       productDetail7.setType("512G");
       productDetail7.setStatus(true);
-      productDetail7.setPrice(580000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail7.setInventory(18);
       productDetail7.setCondition("97% like new");
       productDetail7.setColor("Xanh dương");
@@ -121,7 +128,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail8.setProduct(product);
       productDetail8.setType("64G");
       productDetail8.setStatus(true);
-      productDetail8.setPrice(350000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail8.setInventory(10);
       productDetail8.setCondition("80% like new");
       productDetail8.setColor("Đỏ");
@@ -132,7 +140,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail9.setProduct(product);
       productDetail9.setType("1T");
       productDetail9.setStatus(true);
-      productDetail9.setPrice(610000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail9.setInventory(6);
       productDetail9.setCondition("99% like new");
       productDetail9.setColor("Xám");
@@ -143,7 +152,8 @@ public class ProductSeeder implements CommandLineRunner {
       productDetail10.setProduct(product);
       productDetail10.setType("128G");
       productDetail10.setStatus(true);
-      productDetail10.setPrice(420000);
+      productDetail1.setPricePerUse(500000);
+      productDetail1.setPricePerDay(500000);
       productDetail10.setInventory(22);
       productDetail10.setCondition("88% like new");
       productDetail10.setColor("Hồng");

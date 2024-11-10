@@ -35,8 +35,18 @@ public class OrderDetail {
   @Column(name = "quantity",nullable = false)
   private long quantity;
 
+  @Column(name = "rental_type",nullable = false)
+  private int rentalType;
+//  1 : thuê theo lượt : thời gian < 48h(1 lượt = 2 ngày)
+//  2 : thuê theo ngày > 2 ngày
+
   @Column(name = "current_price",nullable = false)
   private long currentPrice;
+
+  @Column(name = "rental_day",nullable = false)
+  private int rentalDay;
+//  Nếu thuê theo lượt thì bỏ trống
+//  Nếu thuê theo ngày thì giá trị > 2
 
   @Column(name = "current_phone",nullable = false)
   private String currentPhone;
@@ -52,6 +62,11 @@ public class OrderDetail {
   
   @Column(name = "status",nullable = false)
   private int status;
+//  1 : Đã tạo đơn hàng xong chờ admin xác nhận - có thể hủy được
+//  2 : Admin xác nhận - Không thể hủy đơn
+//  3 : Đang giao hàng
+//  4 : Đã nhận được hàng
+//  5 :
 
   @Column(name = "created_at",nullable = false)
   @CreationTimestamp

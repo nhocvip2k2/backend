@@ -16,4 +16,6 @@ public class CreateOrderDetailRequest {
   private String currentPhone;
   private String payment;
   private String shipment;
+  private String rentalType;
+  private int rentalDay;
 }

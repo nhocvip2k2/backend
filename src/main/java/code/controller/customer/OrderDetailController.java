@@ -19,18 +19,24 @@ public class OrderDetailController {
   //  Lấy tất cả các đơn hàng
   @CheckUserAccess
   @GetMapping("/orders")
-  public ResponseEntity<?> getOrders(@PathVariable long userId) {
-    return ResponseEntity.ok(orderDetailService.getOrderDetailsByUserId(userId, 0, 10));
+  public ResponseEntity<?> getOrders(@PathVariable long userId,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok(orderDetailService.getOrderDetailsByUserId(userId, page, size));
   }
 
   //  Lấy tất cả các đơn hàng theo trạng thái : status
   @CheckUserAccess
   @GetMapping("/orders/")
-  public ResponseEntity<?> getOrdersByProductDetailStatus(@PathVariable long userId,
+  public ResponseEntity<?> getOrders(
+      @PathVariable long userId,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
       @RequestParam int status) {
     return ResponseEntity.ok(
-        orderDetailService.getAllByUserIdAndProductDetailStatus(userId, status, 0, 10));
+        orderDetailService.getAllByUserIdAndProductDetailStatus(userId, status, page, size));
   }
+
 
   // Tạo mới đơn hàng dựa trên : List<productDetailId>, userId,
   @CheckUserAccess

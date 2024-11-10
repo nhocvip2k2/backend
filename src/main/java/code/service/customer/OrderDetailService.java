@@ -67,8 +67,20 @@ public class OrderDetailService {
       ProductDetail productDetail = productDetailRepository.findById(productDetailId)
           .orElseThrow(()->new NotFoundException("Không thấy ProductDetail có id : " + productDetailId));
       OrderDetail orderDetail = new OrderDetail();
+//  1 : thuê theo lượt : thời gian < 48h(1 lượt = 2 ngày)
+//  2 : thuê theo ngày > 2 ngày
+      if(request.getRentalType().equals("rentalByDay")){
+        orderDetail.setRentalType(2);
+        orderDetail.setCurrentPrice(productDetail.getPricePerDay());
+        orderDetail.setRentalDay(request.getRentalDay());
+      }
+
+      if(request.getRentalType().equals("rentalByUse")){
+        orderDetail.setRentalType(2);
+        orderDetail.setCurrentPrice(productDetail.getPricePerDay());
+        orderDetail.setRentalDay(request.getRentalDay());
+      }
       orderDetail.setQuantity(productItem.getQuantity());
-      orderDetail.setCurrentPrice(productDetail.getPrice());
       orderDetail.setCurrentPhone(request.getCurrentPhone());
       orderDetail.setCurrentAddress(request.getCurrentAddress());
       orderDetail.setCurrentCondition(productDetail.getCondition());

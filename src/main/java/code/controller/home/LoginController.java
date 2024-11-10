@@ -41,9 +41,9 @@ public class LoginController {
 
 //       Lấy thông tin người dùng
       CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
+      String name = customUserDetails.getUser().getName();
       //Gen token
-      String token = jwtTokenUtil.generateToken(loginRequest.getEmail(),customUserDetails.getUser().getRole());
+      String token = jwtTokenUtil.generateToken(loginRequest.getEmail(),customUserDetails.getUser().getRole(),name);
       Map<String, String> response = new HashMap<>();
       response.put("token", token);
       return ResponseEntity.ok(response);
