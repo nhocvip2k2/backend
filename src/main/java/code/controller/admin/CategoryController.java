@@ -18,8 +18,9 @@ public class CategoryController {
   }
 
   @GetMapping("/categories")
-  public ResponseEntity<Page<Category>> getCategories(){
-    return ResponseEntity.ok(this.categoryService.getCategories(0,10));
+  public ResponseEntity<Page<Category>> getCategories(@RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size){
+    return ResponseEntity.ok(this.categoryService.getCategories(page,size));
   }
 
   @PostMapping("/categories")

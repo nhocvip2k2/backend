@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("adminProductDetailController")
@@ -21,8 +22,9 @@ public class ProductDetailController {
   }
 
   @GetMapping("/product_details")
-  public ResponseEntity<?> getProductDetails(){
-    return ResponseEntity.ok(this.productDetailService.getProductDetails(0,10));
+  public ResponseEntity<?> getProductDetails(@RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size){
+    return ResponseEntity.ok(this.productDetailService.getProductDetails(page,size));
   }
 
   @GetMapping("/product_details/{productDetailId}")

@@ -17,8 +17,9 @@ public class UserController {
   }
 
   @GetMapping("/users")
-  public ResponseEntity<Page<User>> getUsers(){
-    return ResponseEntity.ok(this.userService.getUsers(0,10));
+  public ResponseEntity<Page<User>> getUsers(@RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size){
+    return ResponseEntity.ok(this.userService.getUsers(page,size));
   }
 
   @GetMapping("/users/{user_id}")

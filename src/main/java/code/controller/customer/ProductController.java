@@ -20,14 +20,16 @@ public class ProductController {
 
   //  Lấy tất cả các product
   @GetMapping("/products")
-  public ResponseEntity<?> getProducts() {
-    return ResponseEntity.ok(this.productService.getProductDTOs(0, 10));
+  public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok(this.productService.getProductDTOs(page, size));
   }
 
   //  Lấy tất cả các product theo danh mục
   @GetMapping("/categories/{categoryId}/products")
-  public ResponseEntity<?> getProductsByCategory(@PathVariable long categoryId) {
-    return ResponseEntity.ok(this.productService.getProductDTOsByCategoryId(categoryId, 0, 10));
+  public ResponseEntity<?> getProductsByCategory(@PathVariable long categoryId,@RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok(this.productService.getProductDTOsByCategoryId(categoryId, page, size));
   }
 
   //  Lấy product có id là productId
