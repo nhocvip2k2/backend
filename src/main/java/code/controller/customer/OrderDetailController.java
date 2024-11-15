@@ -19,7 +19,7 @@ public class OrderDetailController {
   //  Lấy tất cả các đơn hàng
   @CheckUserAccess
   @GetMapping("/orders")
-  public ResponseEntity<?> getOrders(@PathVariable long userId,
+  public ResponseEntity<?> getOrderDetails(@PathVariable long userId,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(orderDetailService.getOrderDetailsByUserId(userId, page, size));
@@ -28,7 +28,7 @@ public class OrderDetailController {
   //  Lấy tất cả các đơn hàng theo trạng thái : status
   @CheckUserAccess
   @GetMapping("/orders/")
-  public ResponseEntity<?> getOrders(
+  public ResponseEntity<?> getOrderDetailsByStatus(
       @PathVariable long userId,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
@@ -41,9 +41,22 @@ public class OrderDetailController {
   // Tạo mới đơn hàng dựa trên : List<productDetailId>, userId,
   @CheckUserAccess
   @PostMapping("/orders")
-  public ResponseEntity<?> createOrders(@PathVariable long userId,
+  public ResponseEntity<?> createOrderDetail(@PathVariable long userId,
       @RequestBody CreateOrderDetailRequest request) {
     return ResponseEntity.ok(orderDetailService.createOrderDetail(userId, request));
   }
 
+  @CheckUserAccess
+  @PutMapping("/orders/{orderDetailId}")
+  public ResponseEntity<?> cancelOrderDetail(@PathVariable long userId,
+      @PathVariable Long orderDetailId) {
+    return ResponseEntity.ok(orderDetailService.cancelOrderDetail(userId,orderDetailId));
+  }
+
+  @CheckUserAccess
+  @GetMapping("/orders/{orderDetailId}")
+  public ResponseEntity<?> getOrderDetailById(@PathVariable long userId,
+      @PathVariable Long orderDetailId) {
+    return ResponseEntity.ok(orderDetailService.cancelOrderDetail(userId,orderDetailId));
+  }
 }

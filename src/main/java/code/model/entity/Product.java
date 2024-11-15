@@ -46,7 +46,6 @@ public class Product {
   @JoinColumn(name = "category_id",nullable = false, foreignKey = @ForeignKey(name = "FK_CATEGORY_PRODUCT"))
   private Category category;
 
-  @JsonIgnore
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ProductDetail> productDetails;
 }

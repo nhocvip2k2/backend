@@ -4,6 +4,7 @@ import code.model.entity.Order;
 import code.model.entity.OrderDetail;
 import code.model.entity.ProductDetail;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,4 +31,9 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
       @Param("userId") Long userId,
       @Param("status") int status,
       Pageable pageable);
+
+  @Query("SELECT od FROM OrderDetail od WHERE od.id = :orderDetailId AND od.order.user.id = :userId")
+  Optional<OrderDetail> findByOrderDetailIdAndUserId(@Param("orderDetailId") Long orderDetailId,
+      @Param("userId") Long userId);
+
 }

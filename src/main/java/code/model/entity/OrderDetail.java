@@ -2,22 +2,10 @@ package code.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -62,11 +50,13 @@ public class OrderDetail {
   
   @Column(name = "status",nullable = false)
   private int status;
-//  1 : Đã tạo đơn hàng xong chờ admin xác nhận - có thể hủy được
-//  2 : Admin xác nhận - Không thể hủy đơn
-//  3 : Đang giao hàng
-//  4 : Đã nhận được hàng
-//  5 :
+//  1 : Chưa thanh toán - Có thể hủy
+//  2 : Đã tạo đơn hàng xong chờ admin xác nhận - có thể hủy được
+//  3 : Admin xác nhận + Giao hàng luôn - Không thể hủy đơn
+//  4 : Đã giao đến nơi  - Không thể hủy đơn
+//  5 : Đã hoàn thành - Không thể hủy đơn
+//  0 : Đã hủy
+
 
   @Column(name = "created_at",nullable = false)
   @CreationTimestamp
