@@ -54,7 +54,6 @@ public class OrderDetail {
 //  2 : Đã tạo đơn hàng xong chờ admin xác nhận - có thể hủy được
 //  3 : Admin xác nhận + Giao hàng luôn - Không thể hủy đơn
 //  4 : Đã giao đến nơi  - Không thể hủy đơn
-//  5 : Đã hoàn thành - Không thể hủy đơn
 //  0 : Đã hủy
 
 
@@ -73,4 +72,8 @@ public class OrderDetail {
   @ManyToOne
   @JoinColumn(name = "product_detail_id",nullable = false, foreignKey = @ForeignKey(name = "FK_PRODUCT-DETAIL_ORDER-DETAIL"))
   private ProductDetail productDetail;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "order_return_id", referencedColumnName = "id")
+  private OrderReturn orderReturn;
 }

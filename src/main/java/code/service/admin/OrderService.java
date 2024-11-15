@@ -1,19 +1,11 @@
 package code.service.admin;
 
-import code.exception.BadRequestException;
-import code.exception.NotFoundException;
-import code.model.entity.Order;
-import code.model.entity.OrderDetail;
-import code.model.entity.User;
-import code.repository.OrderDetailRepository;
-import code.repository.OrderRepository;
-import code.repository.ProductDetailRepository;
-import code.repository.UserRepository;
+import code.exception.*;
+import code.model.entity.*;
+import code.repository.*;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 @Service("AdminOrderService")
@@ -23,15 +15,18 @@ public class OrderService {
   private OrderRepository orderRepository;
   private UserRepository userRepository;
   private ProductDetailRepository productDetailRepository;
+  private OrderReturnRepository orderReturnRepository;
 
   public OrderService(OrderDetailRepository orderDetailRepository,
       UserRepository userRepository,
       ProductDetailRepository productDetailRepository,
-      OrderRepository orderRepository) {
+      OrderRepository orderRepository,
+      OrderReturnRepository orderReturnRepository) {
     this.orderDetailRepository = orderDetailRepository;
     this.userRepository = userRepository;
     this.orderRepository = orderRepository;
     this.productDetailRepository = productDetailRepository;
+    this.orderReturnRepository = orderReturnRepository;
   }
 
   //  Lấy tất cả đơn hàng
@@ -62,23 +57,22 @@ public Object updateStatusOrderDetailById(long orderDetailId,int status){
   if(status == 3){
     if(orderDetail.getStatus() == 2){
       orderDetail.setStatus(3);
+      orderDetailRepository.save(orderDetail);
     }
     else throw new BadRequestException("Không thể chuyển trạng thái");
   }
-//  Xác nhận đã giao đến nơi
+//  Xác nhận đã giao đến nơi + Tạo trạng thái trả hàng : OrderReturn
   if(status == 4){
     if(orderDetail.getStatus() == 3){
       orderDetail.setStatus(4);
+      orderDetailRepository.save(orderDetail);
+      OrderReturn orderReturn = new OrderReturn();
+      orderReturn.setOrderDetail(orderDetail);
+      orderReturnRepository.save(orderReturn);
     }
     else throw new BadRequestException("Không thể chuyển trạng thái");
   }
-//  Xác nhận đã hoàn thành - nếu có lỗi, quá hạn thì đã xử lý lỗi, quá hạn
-  if(status == 5){
-    if(orderDetail.getStatus() == 4){
-      orderDetail.setStatus(5);
-    }
-    else throw new BadRequestException("Không thể chuyển trạng thái");
-  }
+
   Order order = orderDetail.getOrder();
   User user = order.getUser();
   Map<String, Object> response = new HashMap<>();
