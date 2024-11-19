@@ -1,0 +1,6 @@
+[build]
+command = "mvn clean install && mvn package"
+publish = "target"
+
+[[plugins]]
+package = "@netlify/plugin-maven"
