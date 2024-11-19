@@ -3,9 +3,11 @@ package code.service.customer;
 import code.model.entity.User;
 import code.exception.NotFoundException;
 import code.model.dto.CustomerInfoDTO;
+import code.model.more.Conversation;
 import code.model.request.ChangePasswordRequest;
 import code.model.request.RegisterRequest;
 import code.model.request.UpdateCustomerRequest;
+import code.repository.ConversationRepository;
 import code.repository.UserRepository;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,11 +17,15 @@ import org.springframework.stereotype.Service;
 
 @Service("customerUserService")
 public class UserService {
-  @Autowired
   private UserRepository userRepository;
-
-  @Autowired
   private PasswordEncoder passwordEncoder;
+  private ConversationRepository conversationRepository;
+
+  public UserService(UserRepository userRepository,PasswordEncoder passwordEncoder,ConversationRepository conversationRepository){
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.conversationRepository = conversationRepository;
+  }
 
   public void checkIdCustomer(Long user_id){
     Optional<User> optionalUser = this.userRepository.findById(user_id);
@@ -49,8 +55,15 @@ public class UserService {
     newUser.setRole("customer");
     newUser.setStatus(true);
 
+    //    Tạo conversation mới rỗng
+    Conversation conversation = new Conversation();
+    conversation.setCustomerId(newUser.getId());
+    conversation.setEmail(newUser.getEmail());
+    conversationRepository.save(conversation);
+
     // Lưu vào cơ sở dữ liệu
     return userRepository.save(newUser);
+
   }
   public User findByEmail(String email){
     return this.userRepository.findByEmail(email);

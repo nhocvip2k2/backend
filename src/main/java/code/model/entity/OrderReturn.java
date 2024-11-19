@@ -16,6 +16,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @Setter
 @Getter
+// trar hàng, admin tìm OrderReturn để thêm thông tin
+// nhập ngày trả
+// TÍnh phí thêm
+// Nhấn OK : tiền thanh toán phí thêm là chưa trả
 public class OrderReturn {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +32,7 @@ public class OrderReturn {
 
   @Column(name = "extra_charge")
   private long extraCharge ;
+// nhập tay : hỏng, quá hạn
 
   @Column(name = "status_fee")
   private boolean statusFee = false ;

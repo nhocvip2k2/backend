@@ -62,7 +62,7 @@ public class OrderDetailService {
     return orderDetail;
   }
 
-  //  Tạo mới đơn hàng : Tạo đối tượng order -> xửa lí List<productDetailId>
+  //  Tạo mới đơn hàng : Tạo đối tượng order -> xửa lí List<productDetailId> và trạng thái 1 là chưa thanh toán
   public List<OrderDetail> createOrderDetail(long userId, CreateOrderDetailRequest request) {
   //    1 - Tạo Order mới
     User user = userRepository.findById(userId)
@@ -111,6 +111,12 @@ public class OrderDetailService {
     return orderDetails;
   }
 
+//  Thanh toán đon hàng
+//  public OrderDetail purchaseOrderDetail(){
+//
+//  }
+//  Hủy đơn hàng
+
   public OrderDetail cancelOrderDetail(long userId, long orderDetailId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new NotFoundException("Không tìm thấy user có id : " + userId));
@@ -118,7 +124,7 @@ public class OrderDetailService {
             userId)
         .orElseThrow(() -> new NotFoundException(
             "Không tìm thấy đơn hàng tương ứng "));
-    if (orderDetail.getStatus() == 1 || orderDetail.getStatus() == 2) {
+    if (orderDetail.getStatus() == 1 ) {
       orderDetail.setStatus(0);
     } else {
       throw new BadRequestException("Không thể hủy đơn hàng ở trạng thái này.");

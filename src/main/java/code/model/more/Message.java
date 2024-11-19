@@ -1,17 +1,11 @@
-package code.model.entity;
+package code.model.more;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import code.model.entity.Category;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name="messages")
@@ -28,10 +22,18 @@ public class Message {
   @Column(name = "sender_id", nullable = false)
   private long senderId = 0;
 
-  @Column(name = "message",nullable = false)
-  private String message;
+  @Column(name = "content",nullable = false)
+  private String content;
 
   @Column(name = "created_at",nullable = false)
   @CreationTimestamp
   private LocalDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updated_at",nullable = false)
+  private LocalDateTime updatedAt;
+
+  @ManyToOne
+  @JoinColumn(name = "conversation_id",nullable = false, foreignKey = @ForeignKey(name = "FK_CONVERSATION_MESSAGE"))
+  private Conversation conversation;
 }

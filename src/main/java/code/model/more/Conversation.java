@@ -1,15 +1,12 @@
-package code.model.entity;
+package code.model.more;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name="conversations")
@@ -27,4 +24,22 @@ public class Conversation {
 
   @Column(name = "email", nullable = false)
   private String email;
+
+  @Column(name = "last_sender_id", nullable = false)
+  private long lastSenderId;
+
+  @Column(name = "last_message_content", nullable = false)
+  private String lastMessageContent;
+
+  @Column(name = "created_at",nullable = false)
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  @UpdateTimestamp
+  @Column(name = "updated_at",nullable = false)
+  private LocalDateTime updatedAt;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Message> messages;
 }

@@ -1,5 +1,7 @@
 package code.seeder;
 
+import code.model.more.Conversation;
+import code.repository.ConversationRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,8 @@ public class UserSeeder implements CommandLineRunner {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private ConversationRepository conversationRepository;
   @Override
   public void run(String... args) throws Exception {
     // Kiểm tra nếu bảng User rỗng
@@ -39,6 +43,11 @@ public class UserSeeder implements CommandLineRunner {
       customer.setPhone("0987654321");
       customer.setRole("customer");
       customer.setStatus(true);
+
+      Conversation conversation = new Conversation();
+      conversation.setId(customer.getId());
+      conversation.setEmail(customer.getEmail());
+      conversationRepository.save(conversation);
 
       userRepository.save(customer);
       System.out.println("Default user created.");

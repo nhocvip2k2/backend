@@ -53,11 +53,13 @@ public Object updateStatusOrderDetailById(long orderDetailId,int status){
   if(status < 0 || status > 6){
     throw new BadRequestException("Trạng thái không hợp lệ");
   }
-//  Xác nhận đơn hàng
+// Chờ xác nhận (Đã thanh toán) -> Xác nhận đơn hàng và giao hàng
   if(status == 3){
     if(orderDetail.getStatus() == 2){
       orderDetail.setStatus(3);
       orderDetailRepository.save(orderDetail);
+      ProductDetail productDetail = orderDetail.getProductDetail();
+      productDetail.setInventory(productDetail.getInventory() - orderDetail.getQuantity());
     }
     else throw new BadRequestException("Không thể chuyển trạng thái");
   }

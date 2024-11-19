@@ -53,7 +53,7 @@ public class OrderDetail {
 //  1 : Chưa thanh toán - Có thể hủy
 //  2 : Đã tạo đơn hàng xong chờ admin xác nhận - có thể hủy được
 //  3 : Admin xác nhận + Giao hàng luôn - Không thể hủy đơn
-//  4 : Đã giao đến nơi  - Không thể hủy đơn
+//  4 : Đã giao đến nơi  - Không thể hủy đơn -> Tạo 1 OrderReturn
 //  0 : Đã hủy
 
 
