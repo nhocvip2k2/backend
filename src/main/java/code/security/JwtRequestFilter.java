@@ -11,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +33,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
   @Autowired
   private JwtTokenUtil jwtTokenUtil;
 
+  @Value("${API_KEY}")
+  private String apiKeyConfig;
+
   private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 
   @Override
@@ -48,6 +52,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       // Permit all for specific URIs
       if (request.getRequestURI().startsWith("/api/home")) {
         chain.doFilter(request, response);
+        return;
+      }
+
+//      Kiểm tra token giao dịch
+      if (request.getRequestURI().startsWith("/api/payment")) {
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer Apikey ")) {
+
+          String apiKey = authorizationHeader.substring(14); // Cắt "Bearer Apikey " để lấy API_KEY_CUA_BAN
+          if (apiKey.equals(apiKeyConfig)) {
+            chain.doFilter(request, response);
+          }
+          else{
+            throw new ForbiddenException("Invalid API_KEY");
+          }
+        }
+        else {
+          throw new ForbiddenException("JWT token is missing or invalid" );
+        }
         return;
       }
 
@@ -93,8 +116,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
       // Tiếp tục chuỗi filter nếu không có lỗi
       chain.doFilter(request, response);
-    }
-    catch(ForbiddenException e){
+    } catch (ForbiddenException e) {
       // Nếu ngoại lệ ForbiddenException được ném, trả về mã trạng thái HTTP 403
       HttpServletResponse httpResponse = (HttpServletResponse) response;
       httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);

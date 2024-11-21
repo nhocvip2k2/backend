@@ -33,6 +33,7 @@ public class SecurityConfig {
             .requestMatchers("/api/auth/**","api/home/**").permitAll() // Cho phép truy cập công khai tới các API xác thực (login, register, v.v.)
             .requestMatchers("/api/admin/**").hasRole("admin") // Chỉ admin có thể truy cập
             .requestMatchers("/api/customer/**").hasRole("customer") // Chỉ customer có thể truy cập
+            .requestMatchers("/api/payment/**").permitAll()
             .anyRequest().authenticated() // Các yêu cầu khác phải được xác thực
         )
         .sessionManagement(session -> session

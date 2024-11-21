@@ -25,6 +25,10 @@ public class Message {
   @Column(name = "content",nullable = false)
   private String content;
 
+
+  @Column(name = "seen",nullable = false)
+  private boolean seen = false;
+
   @Column(name = "created_at",nullable = false)
   @CreationTimestamp
   private LocalDateTime createdAt;

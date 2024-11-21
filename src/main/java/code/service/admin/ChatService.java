@@ -2,6 +2,7 @@ package code.service.admin;
 
 import code.exception.NotFoundException;
 import code.model.more.Conversation;
+import code.model.more.Message;
 import code.repository.ConversationRepository;
 import code.repository.MessageRepository;
 import org.springframework.data.domain.Page;
@@ -35,5 +36,10 @@ public class ChatService {
         .orElseThrow(()-> new NotFoundException("Không thấy conversation có id : " + id));
   }
 
+//  Lấy nội dung tin nhắn : load cố định 20 tin nhắn trên Page
+//  public Page<Message> getMessageByConversation(int page){
+//    Pageable pageable = PageRequest.of(page,10, Sort.by(Sort.Direction.DESC, "updatedAt"));
+//    return messageRepository.
+//  }
 
 }

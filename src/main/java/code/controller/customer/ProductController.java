@@ -27,9 +27,23 @@ public class ProductController {
 
   //  Lấy tất cả các product theo danh mục
   @GetMapping("/categories/{categoryId}/products")
-  public ResponseEntity<?> getProductsByCategory(@PathVariable long categoryId,@RequestParam(defaultValue = "0") int page,
+  public ResponseEntity<?> getProductsByCategory(
+      @PathVariable long categoryId,
+      @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
-    return ResponseEntity.ok(this.productService.getProductDTOsByCategoryId(categoryId, page, size));
+    return ResponseEntity.ok(
+        this.productService.getProductDTOsByCategoryId(categoryId, page, size));
+  }
+
+  //  Lấy tất cả các product theo danh mục và brand
+  @GetMapping("/categories/{categoryId}/products/")
+  public ResponseEntity<?> getProductsByCategoryAndBrand(
+      @PathVariable long categoryId,
+      @RequestParam String brand,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok(
+        this.productService.getProductDTOsByCategoryId(categoryId, page, size));
   }
 
   //  Lấy product có id là productId

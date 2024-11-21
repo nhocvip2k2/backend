@@ -86,6 +86,21 @@ public class ProductService {
     return productDetailDTO;
   }
 
+// Lấy sản phẩm theo brand và category_id
+public Page<ProductDTO> getProductDTOsByCategoryIdAndBrand(long categoryId,String brand, int page, int size) {
+  Pageable pageable = PageRequest.of(page, size);
+  Category category = categoryRepository.findById(categoryId)
+      .orElseThrow(() -> new NotFoundException("Không thấy category có id : " + categoryId));
+  List<ProductDTO> productDTOs = this.convert(productRepository.findByCategoryAndBrand(category,brand));
+//    Chuyển List ProductDTO sang phân trang
+  int start = (int) pageable.getOffset();
+  int end = Math.min((start + pageable.getPageSize()), productDTOs.size());
+  List<ProductDTO> paginatedDTOs = productDTOs.subList(start, end);
+
+  // Trả về Page<ProductDTO> bằng cách sử dụng PageImpl
+  return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
+}
+
 //  Tìm kiếm sản phẩm
   public List<ProductDTO> findProductDTOsByKeyword(String keyword){
     List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);

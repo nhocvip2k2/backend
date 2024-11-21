@@ -25,11 +25,11 @@ public class Conversation {
   @Column(name = "email", nullable = false)
   private String email;
 
-  @Column(name = "last_sender_id", nullable = false)
-  private long lastSenderId;
+  @Column(name = "last_sender_id")
+  private long lastSenderId ;
 
-  @Column(name = "last_message_content", nullable = false)
-  private String lastMessageContent;
+  @Column(name = "last_message_content")
+  private String lastMessageContent ;
 
   @Column(name = "created_at",nullable = false)
   @CreationTimestamp
