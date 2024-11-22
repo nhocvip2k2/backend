@@ -19,6 +19,7 @@ public class TransactionService {
     BeanUtils.copyProperties(request,transaction);
     transaction.setIdSepay(request.getId());
     transaction.setId(null);
+    transactionRepository.save(transaction);
     return transaction;
   }
 }
