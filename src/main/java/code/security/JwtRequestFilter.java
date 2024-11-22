@@ -58,6 +58,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //      Kiểm tra token giao dịch
       if (request.getRequestURI().startsWith("/api/payment")) {
         if (authorizationHeader.contains(apiKeyConfig)) {
+          System.out.println(authorizationHeader);
           chain.doFilter(request, response);
         }
         else {
