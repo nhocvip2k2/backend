@@ -69,7 +69,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
           }
         }
         else {
-          throw new ForbiddenException("JWT token is missing or invalid" );
+          throw new ForbiddenException("JWT token API_KEY is missing or invalid" );
         }
         return;
       }
