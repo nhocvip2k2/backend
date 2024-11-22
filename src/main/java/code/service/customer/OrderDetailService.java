@@ -80,19 +80,10 @@ public class OrderDetailService {
           .orElseThrow(
               () -> new NotFoundException("Không thấy ProductDetail có id : " + productDetailId));
       OrderDetail orderDetail = new OrderDetail();
-  //  1 : thuê theo lượt : thời gian < 48h(1 lượt = 2 ngày)
-  //  2 : thuê theo ngày > 2 ngày
-      if (request.getRentalType().equals("rentalByDay")) {
-        orderDetail.setRentalType(2);
-        orderDetail.setCurrentPrice(productDetail.getPricePerDay());
-        orderDetail.setRentalDay(request.getRentalDay());
-      }
 
-      if (request.getRentalType().equals("rentalByUse")) {
-        orderDetail.setRentalType(2);
-        orderDetail.setCurrentPrice(productDetail.getPricePerDay());
-        orderDetail.setRentalDay(request.getRentalDay());
-      }
+      orderDetail.setRentalDay(productItem.getRentalDay());
+      orderDetail.setCurrentPrice(productDetail.getPrice());
+
   //      Check số lượng đặt hàng với số trong kho
       if (productDetail.getInventory() < productItem.getQuantity()) {
         throw new BadRequestException("Số lượng quá giới hạn");

@@ -13,5 +13,6 @@ import lombok.Setter;
 public class ProductItem {
   private long productDetailId;
   private long quantity;
+  private int rentalDay;
   private String note;
 }
