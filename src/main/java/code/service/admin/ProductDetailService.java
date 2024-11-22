@@ -47,8 +47,7 @@ public class ProductDetailService {
       productDetail.setProduct(product);
       productDetail.setColor(request.getColor());
       productDetail.setType(request.getType());
-      productDetail.setPricePerUse(request.getPricePerUse());
-      productDetail.setPricePerDay(request.getPricePerDay());
+      productDetail.setPrice(request.getPrice());
       productDetail.setCondition(request.getCondition());
       productDetail.setInventory(request.getInventory());
       productDetail.setStatus(true);

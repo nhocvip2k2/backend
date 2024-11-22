@@ -13,8 +13,7 @@ import lombok.Setter;
 public class CreateProductDetailRequest {
   private String color;
   private String type;
-  private long pricePerDay;
-  private long pricePerUse;
+  private long price;
   private String condition;
   private long inventory;
   private long product_id;
