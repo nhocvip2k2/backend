@@ -57,16 +57,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 //      Kiểm tra token giao dịch
       if (request.getRequestURI().startsWith("/api/payment")) {
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer Apikey ")) {
-
-          String apiKey = authorizationHeader.substring(14); // Cắt "Bearer Apikey " để lấy API_KEY_CUA_BAN
-          if (apiKey.equals(apiKeyConfig)) {
-            chain.doFilter(request, response);
-          }
-          else{
-            throw new ForbiddenException("Invalid API_KEY");
-          }
+        if (authorizationHeader.contains(apiKeyConfig)) {
+          chain.doFilter(request, response);
         }
         else {
           throw new ForbiddenException("JWT token API_KEY is missing or invalid" );
