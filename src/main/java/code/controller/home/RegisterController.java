@@ -30,7 +30,8 @@ public class RegisterController {
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
     User newUser = this.userService.registerNewUser(registerRequest);
-    String token = jwtTokenUtil.generateToken(newUser.getEmail(), "customer","Unknown");
+    String token = jwtTokenUtil.generateToken(newUser.getEmail(), "customer","Unknown",
+        newUser.getId());
       Map<String, String> response = new HashMap<>();
       response.put("token", token);
     return ResponseEntity.ok(response);

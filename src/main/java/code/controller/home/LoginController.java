@@ -20,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/home")
 public class LoginController {
+
   @Autowired
   private AuthenticationManager authenticationManager;
 
@@ -34,16 +35,19 @@ public class LoginController {
       throws BadRequestException {
     //Authenticate
     try {
-      Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-          loginRequest.getEmail(),
-          loginRequest.getPassword()
-      ));
+      Authentication authentication = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              loginRequest.getEmail(),
+              loginRequest.getPassword()
+          ));
 
 //       Lấy thông tin người dùng
       CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
       String name = customUserDetails.getUser().getName();
+      long userId = customUserDetails.getUser().getId();
       //Gen token
-      String token = jwtTokenUtil.generateToken(loginRequest.getEmail(),customUserDetails.getUser().getRole(),name);
+      String token = jwtTokenUtil.generateToken(loginRequest.getEmail(),
+          customUserDetails.getUser().getRole(), name,userId);
       Map<String, String> response = new HashMap<>();
       response.put("token", token);
       return ResponseEntity.ok(response);

@@ -20,7 +20,7 @@ public class Conversation {
   private Long id;
 
   @Column(name = "customer_id", nullable = false)
-  private long customerId = 0;
+  private long customerId;
 
   @Column(name = "email", nullable = false)
   private String email;

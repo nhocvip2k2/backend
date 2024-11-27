@@ -1,6 +1,7 @@
 package code.model.more;
 
 import code.model.entity.Category;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.*;
@@ -14,17 +15,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @Getter
 public class Message {
+  @JsonIgnore
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-//  nếu id = 0 là admin - > customer
   @Column(name = "sender_id", nullable = false)
-  private long senderId = 0;
+  private long senderId ;
+
+  @Column(name = "sender_role", nullable = false)
+  private String senderRole;
 
   @Column(name = "content",nullable = false)
   private String content;
-
 
   @Column(name = "seen",nullable = false)
   private boolean seen = false;
@@ -37,6 +40,7 @@ public class Message {
   @Column(name = "updated_at",nullable = false)
   private LocalDateTime updatedAt;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "conversation_id",nullable = false, foreignKey = @ForeignKey(name = "FK_CONVERSATION_MESSAGE"))
   private Conversation conversation;

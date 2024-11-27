@@ -45,8 +45,8 @@ public class UserSeeder implements CommandLineRunner {
       customer.setStatus(true);
 
       Conversation conversation = new Conversation();
-      conversation.setId(customer.getId());
       conversation.setEmail(customer.getEmail());
+      conversation.setCustomerId(2);
       conversationRepository.save(conversation);
 
       userRepository.save(customer);

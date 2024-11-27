@@ -20,6 +20,15 @@ public class TransactionService {
     transaction.setIdSepay(request.getId());
     transaction.setId(null);
     transactionRepository.save(transaction);
+//    Tạo đơn hàng
+//    createOrderDetail
     return transaction;
   }
+//  mở QR
+//  ng dùng quét -> lưu đc giao dịch vào db -> socket gửi về fe để xác nhận thành công ->đóng QR
+//  -> chuyển đến orders
+
+//  Mã nội dung ck : yêu cầu chứa "SEVQR" : SEVQR + Mã KH + Mã Order
+//diện thoại + máy chiếu
+//  Tạo 1 Order -> orderDetail
 }
