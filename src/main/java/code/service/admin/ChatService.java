@@ -1,10 +1,14 @@
 package code.service.admin;
 
 import code.exception.NotFoundException;
+import code.model.entity.User;
 import code.model.more.Conversation;
 import code.model.more.Message;
+import code.model.request.ChatRequest;
 import code.repository.ConversationRepository;
 import code.repository.MessageRepository;
+import code.repository.UserRepository;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +20,14 @@ public class ChatService {
 
   private ConversationRepository conversationRepository;
   private MessageRepository messageRepository;
+  private UserRepository userRepository;
 
   public ChatService(ConversationRepository conversationRepository,
-      MessageRepository messageRepository) {
+      MessageRepository messageRepository,
+      UserRepository userRepository) {
     this.conversationRepository = conversationRepository;
     this.messageRepository = messageRepository;
+    this.userRepository = userRepository;
   }
 
 //  Lấy tất cả cuộc trò chuyện sắp xếp theo thứ tự cập nhật : mới đến cũ
@@ -37,9 +44,51 @@ public class ChatService {
   }
 
 //  Lấy nội dung tin nhắn : load cố định 20 tin nhắn trên Page
-//  public Page<Message> getMessageByConversation(int page){
-//    Pageable pageable = PageRequest.of(page,10, Sort.by(Sort.Direction.DESC, "updatedAt"));
-//    return messageRepository.
-//  }
+  public Page<Message> getMessagesByConversation(long conversationId,int page){
+    Pageable pageable = PageRequest.of(page,20, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    Conversation conversation = conversationRepository.findById(conversationId)
+        .orElseThrow(()-> new NotFoundException("Không thấy Conversation có id : "+ conversationId));
+    return messageRepository.findALlByConversation(pageable,conversation);
+  }
 
+//  Chat voi customer
+//  Gui tin nhan toi customer co id la customerId
+  public Message chatToCustomer(long customerId, ChatRequest request){
+    User customer = userRepository.findByIdAndRole(customerId,"customer")
+        .orElseThrow(
+            () -> new NotFoundException("Không tìm thấy Customer có id : " + customerId));
+//    Lấy cuộc trò chuyện ra theo customerId
+    Conversation conversation = conversationRepository.findByCustomerId(customer.getId())
+        .orElseThrow(() -> new NotFoundException(
+            "Không thấy Conversation tương ứng với CustomerId : " + customerId));
+//    Tạo đối tượng tin nhắn mới
+    Message message = new Message();
+    message.setSenderId(0);
+    message.setSenderRole("admin");
+    message.setContent(request.getContent());
+    message.setConversation(conversation);
+//    Cập nhật dữ liệu cho Conversation như tin nhắn cuối, thời gian cập nhật, ....
+    LocalDateTime now = LocalDateTime.now();
+    message.setCreatedAt(now);
+    message.setUpdatedAt(now);
+    conversation.setUpdatedAt(now);
+    conversation.setLastSenderId(0);
+    conversation.setLastMessageContent(message.getContent());
+//    Lưu tin nhắn và cập nhật thời gian Conversation cùng lúc
+    messageRepository.save(message);
+    conversationRepository.save(conversation);
+
+    return message;
+  }
+
+//  seen tin nhắn của customer : tất cả admin đều có thể seen được
+  public Message seenMessageFromCustomer(long messageId){
+    Message message = messageRepository.findById(messageId)
+        .orElseThrow(()-> new NotFoundException("Không thấy Message có id : " + messageId));
+    message.setSeen(true);
+    Conversation conversation = message.getConversation();
+    messageRepository.save(message);
+    conversationRepository.save(conversation);
+    return message;
+  }
 }

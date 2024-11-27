@@ -4,7 +4,7 @@ import code.exception.*;
 import code.model.entity.User;
 import code.model.more.Conversation;
 import code.model.more.Message;
-import code.model.request.ChatToAdminRequest;
+import code.model.request.ChatRequest;
 import code.repository.ConversationRepository;
 import code.repository.MessageRepository;
 import code.repository.UserRepository;
@@ -44,10 +44,10 @@ public class ChatService {
   }
 //  Tạo 1 tin nhắn mới tới admin
   @Transactional
-  public Message chatToAdmin(ChatToAdminRequest request,long customerId) {
-    User customer = userRepository.findById(customerId)
+  public Message chatToAdmin(ChatRequest request,long customerId) {
+    User customer = userRepository.findByIdAndRole(customerId,"customer")
         .orElseThrow(
-            () -> new NotFoundException("Không tìm thấy User có id : " + customerId));
+            () -> new NotFoundException("Không tìm thấy Customer có id : " + customerId));
 //    Lấy cuộc trò chuyện ra theo customerId
     Conversation conversation = conversationRepository.findByCustomerId(customer.getId())
         .orElseThrow(() -> new NotFoundException(
@@ -66,8 +66,26 @@ public class ChatService {
     conversation.setLastSenderId(customer.getId());
     conversation.setLastMessageContent(message.getContent());
 //    Lưu tin nhắn và cập nhật thời gian Conversation cùng lúc
-    conversationRepository.save(conversation);
     messageRepository.save(message);
+    conversationRepository.save(conversation);
+
     return message;
   }
+
+// đánh dấu là đã seen tất cả các tin nhắn của admin
+public Message seenMessageFromAdmin(long customerId,long messageId){
+  Message message = messageRepository.findById(messageId)
+      .orElseThrow(()-> new NotFoundException("Không thấy Message có id : " + messageId));
+//  Kiểm tra nếu tin nhắn này của customer này thì mới được gọi api
+  if(message.getConversation().getCustomerId() != messageId){
+    throw new ForbiddenException("Forbidden!");
+  }
+  else{
+    message.setSeen(true);
+    Conversation conversation = message.getConversation();
+    messageRepository.save(message);
+    conversationRepository.save(conversation);
+    return message;
+  }
+}
 }

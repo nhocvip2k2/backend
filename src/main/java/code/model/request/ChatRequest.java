@@ -6,6 +6,6 @@ import lombok.*;
 @NoArgsConstructor
 @Setter
 @Getter
-public class ChatToAdminRequest {
+public class ChatRequest {
   private String content;
 }

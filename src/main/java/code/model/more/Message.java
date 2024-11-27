@@ -21,6 +21,8 @@ public class Message {
   private Long id;
 
   @Column(name = "sender_id", nullable = false)
+//  Nếu là customer thì senderId là customerId
+//  Nếu là admin thì senderId là 0
   private long senderId ;
 
   @Column(name = "sender_role", nullable = false)

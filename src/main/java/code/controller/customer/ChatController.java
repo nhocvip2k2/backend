@@ -1,6 +1,6 @@
 package code.controller.customer;
 
-import code.model.request.ChatToAdminRequest;
+import code.model.request.ChatRequest;
 import code.security.CheckUserAccess;
 import code.service.customer.ChatService;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,13 @@ public class ChatController {
   @PostMapping("/chat")
   @CheckUserAccess
   public ResponseEntity<?> chatToAdmin(@PathVariable long user_id,@RequestBody
-      ChatToAdminRequest request){
+  ChatRequest request){
     return ResponseEntity.ok(chatService.chatToAdmin(request,user_id));
   }
+
+//  @PutMapping("/chat/{chatId}")
+//  @CheckUserAccess
+//  public ResponseEntity<?> seenMessageFormAdmin(){
+//
+//  }
 }

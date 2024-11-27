@@ -20,7 +20,8 @@ public class ProductController {
 
   //  Lấy tất cả các product
   @GetMapping("/products")
-  public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "0") int page,
+  public ResponseEntity<?> getProducts(
+      @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(this.productService.getProductDTOs(page, size));
   }
