@@ -23,4 +23,6 @@ public class ProductDTO {
   private Category category;
   private long hired;
   private float star;
+  private long minPrice = 0;
+  private long maxPrice = 0;
 }

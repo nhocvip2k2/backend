@@ -38,6 +38,18 @@ public class ProductService {
       ProductDTO productDTO = new ProductDTO();
       BeanUtils.copyProperties(product, productDTO);
       productDTO.setCategory(product.getCategory());
+//     set giá thuê min-max
+      for(ProductDetail productDetail : product.getProductDetails()){
+        if(productDTO.getMaxPrice() < productDetail.getPrice()){
+          productDTO.setMaxPrice(productDetail.getPrice());
+        }
+        if(productDTO.getMinPrice() == 0){
+          productDTO.setMinPrice(productDetail.getPrice());
+        }
+        if(productDTO.getMinPrice() > productDetail.getPrice()){
+          productDTO.setMinPrice(productDetail.getPrice());
+        }
+      }
 //      Tính số lượt đã thuê
 
 //      Tính số sao đánh giá

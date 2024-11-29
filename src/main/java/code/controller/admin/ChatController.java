@@ -1,5 +1,7 @@
 package code.controller.admin;
 
+import code.controller.socket.WebSocketController;
+import code.model.more.Message;
 import code.model.request.ChatRequest;
 import code.service.admin.ChatService;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController {
 
   private ChatService chatService;
+  private WebSocketController webSocketController;
 
-  public ChatController(ChatService chatService) {
+  public ChatController(ChatService chatService,WebSocketController webSocketController) {
     this.chatService = chatService;
+    this.webSocketController = webSocketController;
   }
 
 //  Lấy tất cả hôi thoại : dành cho phần tin nhắn bên ngoài
@@ -68,6 +72,8 @@ public class ChatController {
       @RequestParam long customerId,
       @RequestBody  ChatRequest request
   ){
-    return ResponseEntity.ok(chatService.chatToCustomer(customerId,request));
+    Message response = chatService.chatToCustomer(customerId,request);
+    webSocketController.sendChatNotification(customerId, response);
+    return ResponseEntity.ok(response);
   }
 }

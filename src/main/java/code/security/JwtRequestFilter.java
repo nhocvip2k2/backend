@@ -50,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       String token = null;
 
       // Permit all for specific URIs
-      if (request.getRequestURI().startsWith("/api/home")) {
+      if (request.getRequestURI().startsWith("/api/home") || request.getRequestURI().startsWith("/ws")) {
         chain.doFilter(request, response);
         return;
       }
