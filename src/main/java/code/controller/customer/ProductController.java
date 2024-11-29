@@ -55,7 +55,9 @@ public class ProductController {
 
   //Tìm kiếm sản phẩm
   @GetMapping("/products/search")
-  public ResponseEntity<?> getProductDTOsByKeyword(@RequestParam String keyword) {
-    return ResponseEntity.ok(this.productService.findProductDTOsByKeyword(keyword));
+  public ResponseEntity<?> getProductDTOsByKeyword(@RequestParam String keyword,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok(this.productService.findProductDTOsByKeyword(keyword,page,size));
   }
 }
