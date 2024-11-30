@@ -47,6 +47,20 @@ public class ProductController {
         this.productService.getProductDTOsByCategoryId(categoryId, page, size));
   }
 
+  //  Lọc sản phẩm dựa trên danh mục, giá và brand
+  @GetMapping("/categories/{categoryId}/products/filter/")
+  public ResponseEntity<?> getProductsByCategoryAndBrandAndPrice(
+      @PathVariable long categoryId,
+      @RequestParam(required = false) String brand,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "0", required = false) int minPrice,
+      @RequestParam(defaultValue = "999999999", required = false) int maxPrice) {
+    return ResponseEntity.ok(
+        this.productService.getProductDTOsByCategoryIdAndPriceAndBrand(categoryId, page, size,
+            minPrice, maxPrice, brand));
+  }
+
   //  Lấy product có id là productId
   @GetMapping("/products/{productId}")
   public ResponseEntity<?> getTypesByProductId(@PathVariable long productId) {
@@ -58,6 +72,8 @@ public class ProductController {
   public ResponseEntity<?> getProductDTOsByKeyword(@RequestParam String keyword,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
-    return ResponseEntity.ok(this.productService.findProductDTOsByKeyword(keyword,page,size));
+    return ResponseEntity.ok(this.productService.findProductDTOsByKeyword(keyword, page, size));
   }
+//  Lọc giá sau khi tìm kiếm sản phẩm
+
 }

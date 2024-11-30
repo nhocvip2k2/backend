@@ -1,5 +1,6 @@
 package code.service.customer;
 
+import code.exception.BadRequestException;
 import code.exception.NotFoundException;
 import code.model.dto.ProductDTO;
 import code.model.dto.ProductDetailDTO;
@@ -10,6 +11,7 @@ import code.repository.CategoryRepository;
 import code.repository.ProductDetailRepository;
 import code.repository.ProductRepository;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -32,21 +34,21 @@ public class ProductService {
     this.productDetailRepository = productDetailRepository;
   }
 
-  private List<ProductDTO> convert(List<Product> products){
+  private List<ProductDTO> convert(List<Product> products) {
     List<ProductDTO> productDTOs = new ArrayList<>();
     for (Product product : products) {
       ProductDTO productDTO = new ProductDTO();
       BeanUtils.copyProperties(product, productDTO);
       productDTO.setCategory(product.getCategory());
 //     set giá thuê min-max
-      for(ProductDetail productDetail : product.getProductDetails()){
-        if(productDTO.getMaxPrice() < productDetail.getPrice()){
+      for (ProductDetail productDetail : product.getProductDetails()) {
+        if (productDTO.getMaxPrice() < productDetail.getPrice()) {
           productDTO.setMaxPrice(productDetail.getPrice());
         }
-        if(productDTO.getMinPrice() == 0){
+        if (productDTO.getMinPrice() == 0) {
           productDTO.setMinPrice(productDetail.getPrice());
         }
-        if(productDTO.getMinPrice() > productDetail.getPrice()){
+        if (productDTO.getMinPrice() > productDetail.getPrice()) {
           productDTO.setMinPrice(productDetail.getPrice());
         }
       }
@@ -58,6 +60,7 @@ public class ProductService {
     }
     return productDTOs;
   }
+
   public Page<ProductDTO> getProductDTOs(int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
     List<ProductDTO> productDTOs = this.convert(productRepository.findAll());
@@ -71,7 +74,7 @@ public class ProductService {
     return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
   }
 
-  //  Lấy product theo category_id
+  //  Lấy product theo categoryId
   public Page<ProductDTO> getProductDTOsByCategoryId(long categoryId, int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
     Category category = categoryRepository.findById(categoryId)
@@ -86,32 +89,67 @@ public class ProductService {
     return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
   }
 
+  //  Lọc product theo cátegory_id, minPrice, maxPrice, brand
+  public Page<ProductDTO> getProductDTOsByCategoryIdAndPriceAndBrand(long categoryId, int page,
+      int size, int minPrice, int maxPrice, String brand) {
+    Pageable pageable = PageRequest.of(page, size);
+    Category category = categoryRepository.findById(categoryId)
+        .orElseThrow(() -> new NotFoundException("Không thấy category có id : " + categoryId));
+    List<Product> products = new ArrayList<>();
+    if (brand == null) {
+      products = productRepository.findByCategory(category);
+    } else {
+      products = productRepository.findByCategoryAndBrand(category, brand);
+    }
+
+    List<ProductDTO> productDTOs = this.convert(products);
+    Iterator<ProductDTO> iterator = productDTOs.iterator();
+
+    while (iterator.hasNext()) {
+      ProductDTO productDTO = iterator.next();
+      if (productDTO.getMaxPrice() < minPrice || productDTO.getMinPrice() > maxPrice
+          || productDTO.getMaxPrice() == 0) {
+        iterator.remove(); // Xóa phần tử an toàn
+      }
+    }
+
+//    Chuyển List ProductDTO sang phân trang
+    int start = (int) pageable.getOffset();
+    int end = Math.min((start + pageable.getPageSize()), productDTOs.size());
+    List<ProductDTO> paginatedDTOs = productDTOs.subList(start, end);
+
+    // Trả về Page<ProductDTO> bằng cách sử dụng PageImpl
+    return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
+  }
+
   //  Lấy Product có id là productId (có cả các thuộc tính : color, type ,....)
   public ProductDetailDTO getProductDTOByProductId(long productId) {
     Product product = productRepository.findById(productId)
         .orElseThrow(() -> new NotFoundException("Không thấy Product có id : " + productId));
     ProductDTO productDTO = new ProductDTO();
-    BeanUtils.copyProperties(product,productDTO);
+    BeanUtils.copyProperties(product, productDTO);
     ProductDetailDTO productDetailDTO = new ProductDetailDTO();
     productDetailDTO.setProductDTO(productDTO);
     productDetailDTO.setProductDetails(productDetailRepository.findByProductId(productId));
     return productDetailDTO;
   }
 
-// Lấy sản phẩm theo brand và category_id
-public Page<ProductDTO> getProductDTOsByCategoryIdAndBrand(long categoryId,String brand, int page, int size) {
-  Pageable pageable = PageRequest.of(page, size);
-  Category category = categoryRepository.findById(categoryId)
-      .orElseThrow(() -> new NotFoundException("Không thấy category có id : " + categoryId));
-  List<ProductDTO> productDTOs = this.convert(productRepository.findByCategoryAndBrand(category,brand));
+  // Lấy sản phẩm theo brand và category_id
+  public Page<ProductDTO> getProductDTOsByCategoryIdAndBrand(long categoryId, String brand,
+      int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Category category = categoryRepository.findById(categoryId)
+        .orElseThrow(() -> new NotFoundException("Không thấy category có id : " + categoryId));
+    List<ProductDTO> productDTOs = this.convert(
+        productRepository.findByCategoryAndBrand(category, brand));
 //    Chuyển List ProductDTO sang phân trang
-  int start = (int) pageable.getOffset();
-  int end = Math.min((start + pageable.getPageSize()), productDTOs.size());
-  List<ProductDTO> paginatedDTOs = productDTOs.subList(start, end);
+    int start = (int) pageable.getOffset();
+    int end = Math.min((start + pageable.getPageSize()), productDTOs.size());
+    List<ProductDTO> paginatedDTOs = productDTOs.subList(start, end);
 
-  // Trả về Page<ProductDTO> bằng cách sử dụng PageImpl
-  return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
-}
+    // Trả về Page<ProductDTO> bằng cách sử dụng PageImpl
+    return new PageImpl<>(paginatedDTOs, pageable, productDTOs.size());
+  }
 
 //  Tìm kiếm sản phẩm
 //  public List<ProductDTO> findProductDTOsByKeyword(String keyword){
@@ -119,9 +157,10 @@ public Page<ProductDTO> getProductDTOsByCategoryIdAndBrand(long categoryId,Strin
 //    return this.convert(products);
 //  }
 
-  public Page<ProductDTO> findProductDTOsByKeyword(String keyword,int page,int size){
+  public Page<ProductDTO> findProductDTOsByKeyword(String keyword, int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
-    List<ProductDTO> productDTOs = this.convert(productRepository.findByNameContainingIgnoreCase(keyword));
+    List<ProductDTO> productDTOs = this.convert(
+        productRepository.findByNameContainingIgnoreCase(keyword));
 
 //    Chuyển List ProductDTO sang phân trang
     int start = (int) pageable.getOffset();
