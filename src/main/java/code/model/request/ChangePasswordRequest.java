@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ChangePasswordRequest {
-  private long id;
   private String oldPassword;
   private String newPassword;
 }

@@ -39,16 +39,16 @@ public class OrderDetailService {
   }
 
   //  Lấy tất cả các đơn hàng chi tiết (OrderDetail)
-  public Page<OrderDetail> getOrderDetailsByUserId(long userId, int page, int size) {
+  public Page<OrderDetail> getOrderDetailsByUser(User user, int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
-    return orderDetailRepository.findAllByUserId(userId, pageable);
+    return orderDetailRepository.findAllByUserId(user.getId(), pageable);
   }
 
   //  Lấy các đơn hàng theo trạng thái
-  public Page<OrderDetail> getAllByUserIdAndProductDetailStatus(long userId, int status, int page,
+  public Page<OrderDetail> getAllByUserAndProductDetailStatus(User user, int status, int page,
       int size) {
     Pageable pageable = PageRequest.of(page, size);
-    return orderDetailRepository.findAllByUserIdAndProductDetailStatus(userId, status, pageable);
+    return orderDetailRepository.findAllByUserIdAndProductDetailStatus(user.getId(), status, pageable);
   }
 
   // Xem đơn hàng cụ thể có id là orderDetailId
@@ -63,10 +63,8 @@ public class OrderDetailService {
   }
 
   //  Tạo mới đơn hàng : Tạo đối tượng order -> xửa lí List<productDetailId> và trạng thái 1 là chưa thanh toán
-  public List<OrderDetail> createOrderDetail(long userId, CreateOrderDetailRequest request) {
+  public List<OrderDetail> createOrderDetail(User user, CreateOrderDetailRequest request) {
   //    1 - Tạo Order mới
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new NotFoundException("Không tìm thấy user có id : " + userId));
     Order order = new Order();
     order.setUser(user);
     order.setPayment(request.getPayment());
@@ -108,11 +106,9 @@ public class OrderDetailService {
 //  }
 //  Hủy đơn hàng
 
-  public OrderDetail cancelOrderDetail(long userId, long orderDetailId) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new NotFoundException("Không tìm thấy user có id : " + userId));
+  public OrderDetail cancelOrderDetail(User user, long orderDetailId) {
     OrderDetail orderDetail = orderDetailRepository.findByOrderDetailIdAndUserId(orderDetailId,
-            userId)
+            user.getId())
         .orElseThrow(() -> new NotFoundException(
             "Không tìm thấy đơn hàng tương ứng "));
     if (orderDetail.getStatus() == 1 ) {

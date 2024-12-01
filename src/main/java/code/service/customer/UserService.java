@@ -83,39 +83,31 @@ public class UserService {
     return customerInfoDTO; // Trả về DTO nếu không có lỗi
   }
 
-  public CustomerInfoDTO updateCustomerInfo(UpdateCustomerRequest updateCustomerRequest){
-    long user_id = updateCustomerRequest.getId();
-    Optional<User> user = this.userRepository.findById(user_id);
-    this.checkIdCustomer(user_id);
-    if(updateCustomerRequest.getName().trim().length() < 4){
+  public CustomerInfoDTO updateCustomerInfo(UpdateCustomerRequest request,User user){
+    if(request.getName().trim().length() < 4){
       throw new RuntimeException("Tên quá ngắn.");
     }
-    if (!updateCustomerRequest.getPhone().matches("^0[0-9]{9,10}$")) {
+    if (!request.getPhone().matches("^0[0-9]{9,10}$")) {
       throw new RuntimeException("Số điện thoại không hợp lệ.");
     }
 
-    User userPresent = user.get();
-    userPresent.setName(updateCustomerRequest.getName());
-    userPresent.setPhone(updateCustomerRequest.getPhone());
-    userRepository.save(userPresent);
-    return this.getCustomerInfo(user_id);
+    user.setName(request.getName());
+    user.setPhone(request.getPhone());
+    userRepository.save(user);
+    return this.getCustomerInfo(user.getId());
   }
 
-  public String changePassword(ChangePasswordRequest changePasswordRequest){
-    Optional<User> optionalUser = this.userRepository.findById(changePasswordRequest.getId());
-    this.checkIdCustomer(changePasswordRequest.getId());
-    User user = optionalUser.get();
-
+  public String changePassword(ChangePasswordRequest request,User user){
     // So sánh mật khẩu cũ với mật khẩu đã mã hóa
-    if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
       throw new RuntimeException("Mật khẩu cũ không đúng.");
     }
 
-    if(changePasswordRequest.getNewPassword().length() < 6){
+    if(request.getNewPassword().length() < 6){
       throw new RuntimeException("Mật khẩu quá ngắn.");
     }
     // Mã hóa mật khẩu mới
-    String encodedNewPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
+    String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
 
     // Cập nhật mật khẩu mới cho người dùng
     user.setPassword(encodedNewPassword);

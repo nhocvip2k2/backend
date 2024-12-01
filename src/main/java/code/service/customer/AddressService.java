@@ -1,5 +1,6 @@
 package code.service.customer;
 
+import code.exception.BadRequestException;
 import code.model.entity.Address;
 import code.model.entity.User;
 import code.exception.NotFoundException;
@@ -22,35 +23,27 @@ public class AddressService {
     this.userRepository = userRepository;
   }
 
-  private void checkIdCustomer(Long user_id){
-    Optional<User> optionalUser = this.userRepository.findById(user_id);
-    if (!optionalUser.isPresent()) {
-      throw new NotFoundException("Không tìm thấy người dùng với id: " + user_id);
-    }
-  }
 // Lấy tất cả Address của 1 người dùng theo userId
-  public List<Address> getAddressesByUserId(long user_id){
-    checkIdCustomer(user_id);
-    return this.addressRepository.findByUser(this.userRepository.findById(user_id).get());
+  public List<Address> getAddressesByUserId(User user){
+    return this.addressRepository.findByUser(user);
   }
 
 //  Lấy Address cụ thể của 1 người dùng theo userId và addressId
-  public Address getAddressByUserIdAndAddressId(long userId,long addressId){
-    checkIdCustomer(userId);
-    return addressRepository.findById(addressId)
+  public Address getAddressById(User user,long addressId){
+    Address address = addressRepository.findById(addressId)
         .orElseThrow(()-> new NotFoundException("Không thấy Address có id : "+addressId));
+    if(address.getUser().getId() != user.getId()){
+      throw new NotFoundException("Không tìm thấy Address phù hợp");
+    }
+    return address;
   }
-  public Address createAddress(long userId, CreateAddressRequest request){
-    User user = userRepository.findById(userId)
-        .orElseThrow(()-> new NotFoundException("Không thâý User có id : " + userId));
+  public Address createAddress(User user, CreateAddressRequest request){
     Address address = new Address();
-
     BeanUtils.copyProperties(request,address);
     if(addressRepository.findByUser(user).size() == 0){
       address.setDefaultAddress(true);
     }
     else{
-
       if(request.isDefaultAddress() == true){
         Address addressDefault = addressRepository.findByDefaultAddress(true);
         addressDefault.setDefaultAddress(false);
@@ -65,11 +58,12 @@ public class AddressService {
   }
 
 //  Cập nhật lại địa chỉ mới theo addressId
-public Address updateAddress(long userId,long addressId, CreateAddressRequest request){
-  User user = userRepository.findById(userId)
-      .orElseThrow(()-> new NotFoundException("Không thâý User có id : " + userId));
+public Address updateAddress(User user,long addressId, CreateAddressRequest request){
   Address address = addressRepository.findById(addressId)
       .orElseThrow(()-> new NotFoundException("Không thấy Address có id : "+addressId));
+  if(address.getUser().getId() != user.getId()){
+    throw new BadRequestException("Không thực hiện được yêu cầu này");
+  }
   if(request.isDefaultAddress() == true){
     Address addressDefault = addressRepository.findByDefaultAddress(true);
     addressDefault.setDefaultAddress(false);

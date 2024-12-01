@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UpdateCustomerRequest {
-  private long id;
   private String name;
   private String phone;
 //  private int status;

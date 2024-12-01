@@ -2,19 +2,22 @@ package code.controller.customer;
 
 import code.model.entity.Address;
 import code.model.dto.CustomerInfoDTO;
+import code.model.entity.User;
 import code.model.request.ChangePasswordRequest;
 import code.model.request.CreateAddressRequest;
 import code.model.request.UpdateCustomerRequest;
-import code.security.CheckUserAccess;
+import code.security.CustomUserDetails;
 import code.service.customer.AddressService;
 import code.service.customer.UserService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 @RestController
-@RequestMapping("/api/customer/{user_id}")
+@RequestMapping("/api/customer")
 public class InformationController {
 
   private UserService userService;
@@ -26,52 +29,47 @@ public class InformationController {
   }
 
   @GetMapping("/profile")
-  @CheckUserAccess
-  public ResponseEntity<?> getCustomerInfo(@PathVariable Long user_id) {
-    CustomerInfoDTO customerInfoDTO = userService.getCustomerInfo(user_id);
+  public ResponseEntity<?> getCustomerInfo(@AuthenticationPrincipal CustomUserDetails userDetail) {
+    CustomerInfoDTO customerInfoDTO = userService.getCustomerInfo(userDetail.getUser().getId());
     return ResponseEntity.ok(customerInfoDTO);
   }
 
   @PutMapping("/profile")
-  @CheckUserAccess
-  public ResponseEntity<?> updateCustomerInfo(@PathVariable Long user_id,
-      @RequestBody UpdateCustomerRequest updateCustomerRequest) {
-    CustomerInfoDTO customerInfoDTO = userService.updateCustomerInfo(updateCustomerRequest);
+  public ResponseEntity<?> updateCustomerInfo(@AuthenticationPrincipal CustomUserDetails userDetail,
+      @RequestBody UpdateCustomerRequest request) {
+    User user = userDetail.getUser();
+    CustomerInfoDTO customerInfoDTO = userService.updateCustomerInfo(request,user);
     return ResponseEntity.ok(customerInfoDTO);
   }
 
   @PutMapping("/profile/password")
-  @CheckUserAccess
-  public ResponseEntity<?> changePassword(@PathVariable Long user_id,
+  public ResponseEntity<?> changePassword(@AuthenticationPrincipal CustomUserDetails userDetail,
       @RequestBody ChangePasswordRequest changePasswordRequest) {
-    String status = userService.changePassword(changePasswordRequest);
+    User user = userDetail.getUser();
+    String status = userService.changePassword(changePasswordRequest,user);
     return ResponseEntity.ok(status);
   }
 
   @GetMapping("/addresses")
-  @CheckUserAccess
-  public ResponseEntity<?> getAddress(@PathVariable long user_id) {
-    List<Address> addresses = this.addressService.getAddressesByUserId(user_id);
+  public ResponseEntity<?> getAddress(@AuthenticationPrincipal CustomUserDetails userDetail) {
+    List<Address> addresses = addressService.getAddressesByUserId(userDetail.getUser());
     return ResponseEntity.ok(addresses);
   }
 
   @GetMapping("/addresses/{addressId}")
-  @CheckUserAccess
-  public ResponseEntity<?> getAddressByAddressId(@PathVariable long user_id,
-      @PathVariable long addressId) {
-    return ResponseEntity.ok(addressService.getAddressByUserIdAndAddressId(user_id, addressId));
+  public ResponseEntity<?> getAddressByAddressId(@AuthenticationPrincipal CustomUserDetails userDetail,@PathVariable long addressId) {
+    return ResponseEntity.ok(addressService.getAddressById(userDetail.getUser(), addressId));
   }
 
   @PutMapping("/addresses/{addressId}")
-  @CheckUserAccess
-  public ResponseEntity<?> updateAddressByAddressId(@PathVariable long user_id,
+  public ResponseEntity<?> updateAddressByAddressId(@AuthenticationPrincipal CustomUserDetails userDetail,
       @PathVariable long addressId, @RequestBody CreateAddressRequest request) {
-    return ResponseEntity.ok(addressService.updateAddress(user_id,addressId, request));
+    return ResponseEntity.ok(addressService.updateAddress(userDetail.getUser(), addressId, request));
   }
 
   @PostMapping("/addresses")
-  @CheckUserAccess
-  public ResponseEntity<?> updateAddress(@PathVariable long user_id,@RequestBody CreateAddressRequest request){
-    return ResponseEntity.ok(addressService.createAddress(user_id,request));
+  public ResponseEntity<?> updateAddress(@AuthenticationPrincipal CustomUserDetails userDetail,
+      @RequestBody CreateAddressRequest request) {
+    return ResponseEntity.ok(addressService.createAddress(userDetail.getUser(), request));
   }
 }

@@ -1,13 +1,14 @@
 package code.controller.customer;
 
 import code.model.request.CreateOrderDetailRequest;
-import code.security.CheckUserAccess;
+import code.security.CustomUserDetails;
 import code.service.customer.OrderDetailService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("customerOrderDetailController")
-@RequestMapping("/api/customer/{userId}")
+@RequestMapping("/api/customer")
 public class OrderDetailController {
 
   private OrderDetailService orderDetailService;
@@ -17,46 +18,43 @@ public class OrderDetailController {
   }
 
   //  Lấy tất cả các đơn hàng
-  @CheckUserAccess
   @GetMapping("/orders")
-  public ResponseEntity<?> getOrderDetails(@PathVariable long userId,
+  public ResponseEntity<?> getOrderDetails(@AuthenticationPrincipal CustomUserDetails userDetail,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
-    return ResponseEntity.ok(orderDetailService.getOrderDetailsByUserId(userId, page, size));
+    return ResponseEntity.ok(orderDetailService.getOrderDetailsByUser(userDetail.getUser(), page, size));
   }
 
   //  Lấy tất cả các đơn hàng theo trạng thái : status
-  @CheckUserAccess
   @GetMapping("/orders/")
   public ResponseEntity<?> getOrderDetailsByStatus(
-      @PathVariable long userId,
+      @AuthenticationPrincipal CustomUserDetails userDetail,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       @RequestParam int status) {
     return ResponseEntity.ok(
-        orderDetailService.getAllByUserIdAndProductDetailStatus(userId, status, page, size));
+        orderDetailService.getAllByUserAndProductDetailStatus(userDetail.getUser(), status, page, size));
   }
 
 
   // Tạo mới đơn hàng dựa trên : List<productDetailId>, userId,
-  @CheckUserAccess
   @PostMapping("/orders")
-  public ResponseEntity<?> createOrderDetail(@PathVariable long userId,
+  public ResponseEntity<?> createOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetail,
       @RequestBody CreateOrderDetailRequest request) {
-    return ResponseEntity.ok(orderDetailService.createOrderDetail(userId, request));
+    return ResponseEntity.ok(orderDetailService.createOrderDetail(userDetail.getUser(), request));
   }
 
-  @CheckUserAccess
+//  Huy don hang
   @PutMapping("/orders/{orderDetailId}")
-  public ResponseEntity<?> cancelOrderDetail(@PathVariable long userId,
+  public ResponseEntity<?> cancelOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetail,
       @PathVariable Long orderDetailId) {
-    return ResponseEntity.ok(orderDetailService.cancelOrderDetail(userId,orderDetailId));
+    return ResponseEntity.ok(orderDetailService.cancelOrderDetail(userDetail.getUser(),orderDetailId));
   }
 
-  @CheckUserAccess
+//  Lay don hang theo orderId
   @GetMapping("/orders/{orderDetailId}")
-  public ResponseEntity<?> getOrderDetailById(@PathVariable long userId,
+  public ResponseEntity<?> getOrderDetailById(@AuthenticationPrincipal CustomUserDetails userDetail,
       @PathVariable Long orderDetailId) {
-    return ResponseEntity.ok(orderDetailService.cancelOrderDetail(userId,orderDetailId));
+    return ResponseEntity.ok(orderDetailService.cancelOrderDetail(userDetail.getUser(),orderDetailId));
   }
 }

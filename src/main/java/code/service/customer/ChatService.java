@@ -30,28 +30,22 @@ public class ChatService {
     this.userRepository = userRepository;
   }
 //  Lấy phân trang các tin nhắn đã nhắn
-  public Page<Message> getMessages(long customerId, int page, int size){
+  public Page<Message> getMessages(User user, int page, int size){
     Pageable pageable = PageRequest.of(page, size);
-    User customer = userRepository.findById(customerId)
-        .orElseThrow(
-            () -> new NotFoundException("Không tìm thấy User có id : " + customerId));
     //    Lấy cuộc trò chuyện ra theo customerId
-    Conversation conversation = conversationRepository.findByCustomerId(customer.getId())
+    Conversation conversation = conversationRepository.findByCustomerId(user.getId())
         .orElseThrow(() -> new NotFoundException(
-            "Không thấy Conversation tương ứng với CustomerId : " + customerId));
+            "Không thấy Conversation tương ứng với CustomerId : " + user.getId()));
 //    Lấy ra (size) tin nhắn mới nhất trong cuộc trò chuyện
     return messageRepository.findALlByConversation(pageable,conversation);
   }
 //  Tạo 1 tin nhắn mới tới admin
   @Transactional
-  public Message chatToAdmin(ChatRequest request,long customerId) {
-    User customer = userRepository.findByIdAndRole(customerId,"customer")
-        .orElseThrow(
-            () -> new NotFoundException("Không tìm thấy Customer có id : " + customerId));
+  public Message chatToAdmin(ChatRequest request,User customer) {
 //    Lấy cuộc trò chuyện ra theo customerId
     Conversation conversation = conversationRepository.findByCustomerId(customer.getId())
         .orElseThrow(() -> new NotFoundException(
-            "Không thấy Conversation tương ứng với CustomerId : " + customerId));
+            "Không thấy Conversation tương ứng với CustomerId : " + customer.getId()));
 //    Tạo đối tượng tin nhắn mới
     Message message = new Message();
     message.setSenderId(customer.getId());
