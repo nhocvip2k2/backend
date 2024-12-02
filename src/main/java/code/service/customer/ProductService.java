@@ -108,7 +108,7 @@ public class ProductService {
     while (iterator.hasNext()) {
       ProductDTO productDTO = iterator.next();
       if (productDTO.getMaxPrice() < minPrice || productDTO.getMinPrice() > maxPrice
-          || productDTO.getMaxPrice() == 0) {
+          ) {
         iterator.remove(); // Xóa phần tử an toàn
       }
     }
